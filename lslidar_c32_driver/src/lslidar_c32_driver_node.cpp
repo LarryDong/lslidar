@@ -22,13 +22,12 @@
 using namespace lslidar_c32_driver;
 volatile sig_atomic_t flag = 1;
 
-static void my_handler(int sig)
-{
+static void my_handler(int sig){
     flag = 0;
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv){
+
     ros::init(argc, argv, "lslidar_c32_driver");
     ros::NodeHandle node;
     ros::NodeHandle private_nh("~");
@@ -39,8 +38,7 @@ int main(int argc, char **argv)
     lslidar_c32_driver::lslidarDriver dvr(node, private_nh);
     // loop until shut down or end of file
     ROS_INFO("Print sth. to avoid bugs."); // avoid "runtime_error" for 32-bit dual error.
-    while (ros::ok() && dvr.poll())
-    {
+    while (ros::ok() && dvr.poll()){
         ros::spinOnce();
     }
 

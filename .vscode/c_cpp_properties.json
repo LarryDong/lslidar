@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/opt/ros/melodic/**",
+                "/usr/include/**",
+                "/home/larry/lidar_ws/devel/**",
+                "/home/larry/lidar_ws/src/lslidar/**"
+            ],
+            "defines": [],
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}

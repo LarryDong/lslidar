@@ -23,41 +23,36 @@
 #include "rawdata.h"
 #include <sensor_msgs/TimeReference.h>
 
-namespace lslidar_c32_decoder
-{
-class Convert
-{
-public:
-  Convert(ros::NodeHandle node, ros::NodeHandle private_nh);
+namespace lslidar_c32_decoder{
 
-  ~Convert()
-  {
-  }
+class Convert{
+public:
+    Convert(ros::NodeHandle node, ros::NodeHandle private_nh);
+    ~Convert(){ }
 
 private:
+    void processScan(const lslidar_c32_msgs::LslidarC32ScanUnified::ConstPtr &scanMsg);
+    void timeSync(const sensor_msgs::TimeReferenceConstPtr &time_msg);
+    /// Pointer to dynamic reconfigure service srv_
 
-  void processScan(const lslidar_c32_msgs::LslidarC32ScanUnified::ConstPtr& scanMsg);
-  void timeSync(const sensor_msgs::TimeReferenceConstPtr& time_msg);
-  /// Pointer to dynamic reconfigure service srv_
-  
-  // Publish scan Data
-    void publishScan(lslidar_c32_msgs::LslidarC32SweepPtr& sweep_data, int scan_num);
-	
-  boost::shared_ptr<lslidar_rawdata::RawData> data_;
-  ros::Subscriber packet_sub_;
-  ros::Subscriber sync_sub_;
-  ros::Time global_time;
-  lslidar_c32_msgs::LslidarC32ScanUnifiedPtr scan_recv;
-  lslidar_c32_msgs::LslidarC32SweepPtr sweep_data;
-  bool scan_start;
-  bool publish_scan;
-  int scan_num;
-  std::string scan_frame_id;
-  bool time_synchronization_;
-  size_t scan_nums;
-  ros::Publisher output_;
-  ros::Publisher scan_pub;
+    // Publish scan Data
+    void publishScan(lslidar_c32_msgs::LslidarC32SweepPtr &sweep_data, int scan_num);
+
+    boost::shared_ptr<lslidar_rawdata::RawData> data_;
+    ros::Subscriber packet_sub_;
+    ros::Subscriber sync_sub_;
+    ros::Time global_time;
+    lslidar_c32_msgs::LslidarC32ScanUnifiedPtr scan_recv;
+    lslidar_c32_msgs::LslidarC32SweepPtr sweep_data;
+    bool scan_start;
+    bool publish_scan;
+    int scan_num;
+    std::string scan_frame_id;
+    bool time_synchronization_;
+    size_t scan_nums;
+    ros::Publisher output_;
+    ros::Publisher scan_pub;
 };
 
-}  // namespace lslidar_c32_decoder
+} // namespace lslidar_c32_decoder
 #endif

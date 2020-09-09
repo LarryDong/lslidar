@@ -8,7 +8,7 @@ int main(int argc, char **argv){
     
     ros::init(argc, argv, "pointcloud_receiver");
     ros::NodeHandle nh("~");
-    ROS_WARN("Point cloud receiver start...");
+    ROS_WARN("Pointcloudreceiver start...");
 
     my_receiver::PointcloudReceiver ptReceiver(nh);
 

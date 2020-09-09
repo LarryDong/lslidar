@@ -1,0 +1,4 @@
+
+record rosbags:
+rosbag record -a					# record all topics
+rosbag record /lslidar_packet_difop /lslidar_packet	# record network packets

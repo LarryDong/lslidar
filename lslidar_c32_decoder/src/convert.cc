@@ -123,7 +123,7 @@ void Convert::processScan(const lslidar_c32_msgs::LslidarC32ScanUnified::ConstPt
     outPoints->header.frame_id = scanMsg->header.frame_id;
     outPoints->clear();
     outPoints->height = 32;
-    outPoints->width = 12 * (int)scanMsg->packets.size();           //~ why 12?
+    outPoints->width = 12 * (int)scanMsg->packets.size();           //~ why 12: one data-packet include 12 blocks.
     //ROS_INFO("packets.size=%d",scanMsg->packets.size());
     outPoints->is_dense = false;
     outPoints->resize(outPoints->height * outPoints->width);

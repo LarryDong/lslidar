@@ -1,6 +1,4 @@
 
-
-
 #include <iostream>
 #include "KVH1750.h"
 #include <ros/ros.h>
@@ -11,14 +9,19 @@ sensor_msgs::Imu toRosMsg(const my_imu::Imu_Data & rawdata){
     imu_data.header.stamp = ros::Time::now();
     imu_data.header.frame_id = "KVH1750";
     imu_data.header.seq = rawdata.sequence_num;
-    imu_data.angular_velocity.x = rawdata.acc[0];
-    imu_data.angular_velocity.y = rawdata.acc[1];
-    imu_data.angular_velocity.z = rawdata.acc[2];
-    imu_data.linear_acceleration.x = rawdata.gyro[0];
-    imu_data.linear_acceleration.y = rawdata.gyro[1];
-    imu_data.linear_acceleration.z = rawdata.gyro[2];
+    imu_data.angular_velocity.x = rawdata.gyro[0];
+    imu_data.angular_velocity.y = rawdata.gyro[1];
+    imu_data.angular_velocity.z = rawdata.gyro[2];
+    imu_data.linear_acceleration.x = rawdata.acc[0] * Gravity;
+    imu_data.linear_acceleration.y = rawdata.acc[1] * Gravity;
+    imu_data.linear_acceleration.z = rawdata.acc[2] * Gravity;
+    return imu_data;
 }
 
+
+void IMU_Callback(sensor_msgs::Imu imu){
+    ROS_INFO("IMU callback");
+}
 
 int main(int argc, char **argv){
 

@@ -2,8 +2,13 @@
 // Created by LYC.
 // Modified by LarryDong
 
+#ifndef KVH1750_H_
+#define KVH1750_H_
+
 #include <iostream>
 #include <boost/asio.hpp>
+
+#define Gravity 9.801
 
 namespace my_imu{
 
@@ -21,7 +26,6 @@ public:
     imu_1750() = default;
     explicit imu_1750(std::string dev); // construct func.
     bool get_data(Imu_Data &data);      // decode KVH1750 data;
-
 private:
     // sensor_msgs::Imu imu_data_;         // useful imu_data_
     
@@ -35,4 +39,7 @@ private:
     }bag1_{},bag2_{};
 };
 
+void show_data(Imu_Data);
 }
+
+#endif

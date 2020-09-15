@@ -25,6 +25,7 @@ include_directories(
     ${catkin_INCLUDE_DIRS}
 )
 
+# IMU topic node.
 add_executable(imu_driver_node src/imu_driver_node.cpp src/KVH1750.cpp)
 target_link_libraries(imu_driver_node 
     boost_system

@@ -59,5 +59,11 @@ bool imu_1750::get_data(Imu_Data &data){
 
 
 
+void show_data(Imu_Data d){
+    using namespace std;
+    cout << "Data:" << endl;
+    cout << "gyro: " << d.gyro[0] << ", " << d.gyro[1] << ", " << d.gyro[2] << endl;
+    cout << "acc: " << d.acc[0] << ", " << d.acc[1] << ", " << d.acc[2] << endl;
+}
 
 }

@@ -2,7 +2,8 @@
 #include <boost/asio.hpp>
 #include <utility>
 #include <iostream>
-
+#include <iomanip>
+using namespace std;
 using namespace boost::asio;
 struct imu_data
 {
@@ -88,6 +89,8 @@ private:
     }bag1_{},bag2_{};
 };
 
+float roll, pitch, yaw;
+
 int main()
 {
     imu_1750 imu("/dev/ttyUSB0");
@@ -98,10 +101,14 @@ int main()
         imu.get_data(data);
         if(data.valid==0x77)
         {
-            std::cout<<"sequence:"<<data.sequence_num<<
-            " roll:"<<data.gyro[0]<<" pitch:"<<data.gyro[1]<<
-            " yaw:"<<data.gyro[2]<<std::endl<<" acc x:"<<data.acc[0]<<
-            "acc y:"<<data.acc[1]<<" acc z:"<<data.acc[2]<<std::endl;
+            // std::cout<<"sequence:"<<data.sequence_num<<
+            // " roll:"<<data.gyro[0]<<" pitch:"<<data.gyro[1]<<
+            // " yaw:"<<data.gyro[2]<<std::endl<<" acc x:"<<data.acc[0]<<
+            // "acc y:"<<data.acc[1]<<" acc z:"<<data.acc[2]<<std::endl;
+            roll += data.gyro[0];
+            pitch +=data.gyro[1];
+            yaw += data.gyro[2];
+            cout << fixed << setprecision(5) << "X: " << roll << ", Y: " << pitch << ", Z: " << yaw << endl;
         }
     }
     return 0;

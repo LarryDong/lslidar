@@ -8,7 +8,7 @@
 #include <iostream>
 #include <boost/asio.hpp>
 
-#define Gravity 9.801
+#define Gravity (9.801f)
 
 namespace my_imu{
 

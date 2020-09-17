@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 2.8)
 project(test_IMU)
 find_package(Threads)
 find_package(Boost)

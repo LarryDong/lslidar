@@ -7,18 +7,21 @@
 namespace my_filter{
 
 using namespace std;
-void BasicFilter::quaternion2RotationMatrix(void){
+
+Eigen::Matrix3d BasicFilter::calcRotationMatrix(float q0, float q1, float q2, float q3){
+
     float r11, r12, r13, r21, r22, r23, r31, r32, r33;
-    float q0q0 = q0_ * q0_;
-    float q0q1 = q0_ * q1_;
-    float q0q2 = q0_ * q2_;
-    float q0q3 = q0_ * q3_;
-    float q1q1 = q1_ * q1_;
-    float q1q2 = q1_ * q2_;
-    float q1q3 = q1_ * q3_;
-    float q2q2 = q2_ * q2_;
-    float q2q3 = q2_ * q3_;
-    float q3q3 = q3_ * q3_;
+    float q0q0 = q0 * q0;
+    float q0q1 = q0 * q1;
+    float q0q2 = q0 * q2;
+    float q0q3 = q0 * q3;
+    float q1q1 = q1 * q1;
+    float q1q2 = q1 * q2;
+    float q1q3 = q1 * q3;
+    float q2q2 = q2 * q2;
+    float q2q3 = q2 * q3;
+    float q3q3 = q3 * q3;
+
     r11 = q0q0 + q1q1 - q2q2 - q3q3;
     r12 = 2 * q1q2 + 2 * q0q3;
     r13 = 2 * q1q3 - 2 * q0q2;
@@ -28,32 +31,39 @@ void BasicFilter::quaternion2RotationMatrix(void){
     r31 = 2 * q1q3 + 2 * q0q2;
     r32 = 2 * q2q3 - 2 * q0q1;
     r33 = q0q0 - q1q1 - q2q2 + q3q3;
+    
+    Eigen::Matrix3d R;
+    R << r11, r12, r13, r21, r22, r23, r31, r32, r33;
+    return R;
+}
+
+Eigen::Vector3d BasicFilter::calcEularAngelZYX(Eigen::Matrix3d R){
+    float phi, theta, psi;
+    phi = atan2f(-R(1, 2), R(2, 2));
+    theta = asinf(R(0, 2));
+    psi = atan2f(-R(0, 1), R(0, 0));
+    Eigen::Vector3d ea = Eigen::Vector3d(phi, theta, psi);
+    return ea;
+}
+
+Eigen::Vector3d BasicFilter::calcEularAngelZYX(float q0, float q1, float q2, float q3){
+    return (calcEularAngelZYX(calcRotationMatrix(q0, q1, q2, q3)));
 }
 
 void BasicFilter::printEularAngle(void){
-float phi, theta, pasi;
-    float q0q0 = q0_ * q0_;
-    float q0q1 = q0_ * q1_;
-    float q0q2 = q0_ * q2_;
-    float q0q3 = q0_ * q3_;
-    float q1q1 = q1_ * q1_;
-    float q1q2 = q1_ * q2_;
-    float q1q3 = q1_ * q3_;
-    float q2q2 = q2_ * q2_;
-    float q2q3 = q2_ * q3_;
-    float q3q3 = q3_ * q3_;
-
-    phi = atan2f(2 * (q0q1 + q2q3), 1 - 2 * (q1q1 + q2q2));
-    theta = asinf(2 * (q0q2 - q1q3));
-    pasi = atan2f(2 * (q0q3 + q1q2), 1 - 2 * (q2q2 + q3q3));
-
-    cout << fixed << setprecision(5) << "Roll: " << phi << ", picth: " << theta << ", yaw: " << pasi << endl;
+    eularAngle_ = calcEularAngelZYX(q0_, q1_, q2_, q3_);
+    cout << fixed << setprecision(4) << "XYZ Eular angle from IMU to World: ["
+            << eularAngle_[0] << ", " << eularAngle_[1] << ", " << eularAngle_[2] << "]" << endl;
 }
 
 void BasicFilter::printQuaternion(void){
-    cout << fixed << setprecision(4) << "Quaterion: [" << q0_ << ", " << q1_ << ", " << q2_ << ", " << q3_ << " ]" << endl;
+    cout << fixed << setprecision(4) << "Quaterion: ["
+            << q0_ << ", " << q1_ << ", " << q2_ << ", " << q3_ << " ]" << endl;
 }
 
+void BasicFilter::printRotationMatrix(void){
+    // cout << fixed << setprecision(4) << "Rotation Matrix: " << R_ << endl;
+}
 
 
 // MahonyFilter

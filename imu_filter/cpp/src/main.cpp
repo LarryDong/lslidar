@@ -30,12 +30,17 @@ int main(){
         Eigen::Vector3d acc(data.acc[0], data.acc[1], data.acc[2]);
         acc_init += acc;
     }
-    acc_init *= (1.0f / init_time_counter);
-
+    acc_init.normalize();       // use norm instead of counter to avoid >1;
+    // cout << "Acc init: " << acc_init << endl;
+    
+    // calculate eular angle.
     Eigen::Vector3d ea_w_i0;
     // acc = R_i0_w(a_real - [0,0,-g]) + noise; |-> (R_i0_w)*[0,0,g] = acc_init
-    // [sin(y), -cos(y)*sin(x), cos(x)*cos(y)]*g = acc_init;
-    ea_w_i0 << atan2(-acc_init[1], acc_init[2]), asin(acc_init[0]), 0; // Attention! That g=[0, 0, 1] in measurement.
+    bool is_large_pitch = false; // depend ZYX or ZXY eular angle.
+    if (!is_large_pitch)
+        ea_w_i0 << atan2(-acc_init[1], acc_init[2]), asin(acc_init[0]), 0;  // R*g = [sin(y), -cos(y)*sin(x), cos(x)*cos(y)]
+    else
+        ea_w_i0 << -asin(acc_init[1]), atan2(acc_init[0], acc_init[2]), 0;  // R*g = [cx*sy, -sx, cx*cy]
 
     Eigen::Matrix3d R_i0_w, R_w_i0;
     // Attention! Rotation from world2imu is ZYX from imu2world !!!
@@ -48,12 +53,6 @@ int main(){
     filter.R_w_i0_ = R_w_i0;
     cout << "Init IMU 2 world Eular angle: " << endl;
     cout << fixed << setprecision(4) << ea_w_i0[0] << ", " << ea_w_i0[1] << ", " << ea_w_i0[2] << "]" << endl;
-
-
-
-
-    return 0;
-    // following integration is failed....
 
     // calculate
     cout << "Begin to calcualte..." << endl;
@@ -70,20 +69,23 @@ int main(){
         Eigen::Vector3d gyro(data.gyro[0], data.gyro[1], data.gyro[2]);
         
         filter.updateIMU(gyro[0], gyro[1], gyro[2], acc[0], acc[1], acc[2]);
-        g_counter++;
-        if (g_counter > 100){
-            g_counter = 0;
-            filter.printEularAngle();
-            cout << "Position: [" << fixed << setprecision(4) << position[0] << ", " << position[1] << ", " << position[2] << "]." << endl;
-        }
 
         // calculate position
         filter.R_i0_i_ = filter.calcRotationMatrix(filter.q0_, filter.q1_, filter.q2_, filter.q3_);
         // a_m = R_i_w (a_real - g); R_i_w = R_i_i0 * R_i0_w
         Eigen::Matrix3d R_i_w = filter.R_w_i0_ * filter.R_i0_i_;
 
-        Eigen::Vector3d acc_w = R_i_w.transpose() * acc + Eigen::Vector3d(0, 0, -Gravity);
-        cout << "acc_w: [" << fixed << setprecision(4) << acc_w[0] << ", " << acc_w[1] << ", " << acc_w[2] << "]." << endl;
+        // Eigen::Vector3d acc_w = R_i_w.transpose() * acc + Eigen::Vector3d(0, 0, -Gravity);
+        Eigen::Vector3d acc_w = R_w_i0 * acc + Eigen::Vector3d(0, 0, -Gravity);
+
+        g_counter++;
+        if (g_counter > 100){
+            g_counter = 0;
+            // filter.printEularAngle();
+            // cout << "Position: [" << fixed << setprecision(4) << position[0] << ", " << position[1] << ", " << position[2] << "]." << endl;
+            cout << "acc_w: [" << fixed << setprecision(4) << acc_w[0] << ", " << acc_w[1] << ", " << acc_w[2] << "]." << endl;
+        }
+
 
         Eigen::Vector3d delta_position = v_w * delta_t + 0.5 * acc_w * delta_t * delta_t;
         v_w += acc_w * delta_t;

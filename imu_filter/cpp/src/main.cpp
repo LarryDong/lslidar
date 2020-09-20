@@ -21,7 +21,7 @@ int main(){
 
     Eigen::Vector3d acc_init;
     bool is_init = false;
-    const int init_time_counter = 1000;     // 1s.
+    const int init_time_counter = 2000;     // 1s.
 
     // calculate bias rotation;
     cout << "Calculating bais..." << endl;
@@ -75,21 +75,23 @@ int main(){
         // a_m = R_i_w (a_real - g); R_i_w = R_i_i0 * R_i0_w
         Eigen::Matrix3d R_i_w = filter.R_w_i0_ * filter.R_i0_i_;
 
-        // Eigen::Vector3d acc_w = R_i_w.transpose() * acc + Eigen::Vector3d(0, 0, -Gravity);
+        // Eigen::Vector3d acc_w = R_w_i0 * acc + Eigen::Vector3d(0, 0, -Gravity);
         Eigen::Vector3d acc_w = R_w_i0 * acc + Eigen::Vector3d(0, 0, -Gravity);
+
+        // Eigen::Vector3d delta_position = v_w * delta_t + 0.5 * acc_w * delta_t * delta_t;
+        Eigen::Vector3d delta_position = v_w * delta_t;
+
+        v_w += acc_w * delta_t;
+        position += delta_position;
 
         g_counter++;
         if (g_counter > 100){
             g_counter = 0;
             // filter.printEularAngle();
-            // cout << "Position: [" << fixed << setprecision(4) << position[0] << ", " << position[1] << ", " << position[2] << "]." << endl;
-            cout << "acc_w: [" << fixed << setprecision(4) << acc_w[0] << ", " << acc_w[1] << ", " << acc_w[2] << "]." << endl;
+            cout << "V_w: "<<v_w<<", Delta position: " << delta_position << endl;
+            cout << "Position: [" << fixed << setprecision(4) << position[0] << ", " << position[1] << ", " << position[2] << "]." << endl;
+            // cout << "acc_w: [" << fixed << setprecision(4) << acc_w[0] << ", " << acc_w[1] << ", " << acc_w[2] << "]." << endl;R_w_i0
         }
-
-
-        Eigen::Vector3d delta_position = v_w * delta_t + 0.5 * acc_w * delta_t * delta_t;
-        v_w += acc_w * delta_t;
-        position += delta_position;
     }
     return 0;
 }

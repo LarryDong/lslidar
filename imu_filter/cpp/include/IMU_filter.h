@@ -60,6 +60,8 @@ public:
         : BasicFilter(frequency), beta_(beta) {}
     void updateIMU(float gx, float gy, float gz, float ax, float ay, float az) override;
 
+
+
 private:
     float beta_;
 };

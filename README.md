@@ -12,6 +12,8 @@ When running:
 2. roslaunch lslidar/my_launch/driver.launch
 3. roslaunch lslidar/my_launch/decoder.launch
 4. rosrun imu_driver imu_driver_node
+5. launch rviz, set "laser_link" and add "pointCloud2"
+6. rosbag record -a     # record all data
 
 Attention:
 1. Rotation speed: +- 490 degree/s. Larger than this value, no output so that filter failed.

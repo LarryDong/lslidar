@@ -2,10 +2,13 @@
 
 codes for Lidar+IMU system.
 
-## When compiling Lidar, need pcap.h
-1. sudo apt install libpcap-dev
-if error: "libpcap-dev depends libpcap0.8-dev but it is not going to be installed", remove 0.8 version by: 
-2. sudo apt-get remove libpcap0.8
+### When compiling Lidar, need pcap.h
+Solution: "sudo apt install libpcap-dev"
+
+if error: "libpcap-dev depends libpcap0.8-dev but it is not going to be installed", remove 0.8 version by:  "sudo apt-get remove libpcap0.8"
+  
+### When compiling, "Could not find the required component 'pcl_ros'"
+Solution: "sudo apt install ros-DISTRIBUTION-pcl-ros"
 
 
 ## Hardware setup
